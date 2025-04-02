@@ -1,5 +1,8 @@
 import streamlit as st
 import pandas as pd
+import sendgrid
+from sendgrid.helpers.mail import Mail, Email, To, Content, Attachment, FileContent, FileName, FileType, Disposition
+import base64
 
 # Hide sidebar
 st.set_page_config(layout="wide")
@@ -88,3 +91,42 @@ st.download_button(
     file_name='client_info.csv',
     mime='text/csv'
 )
+
+# Email sending section
+SENDGRID_API_KEY = "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"
+FROM_EMAIL = "cdimen@hco.com"
+
+st.markdown("---")
+st.markdown("### 📬 Send Proposal to Client")
+recipient_email = st.text_input("Enter recipient's email address")
+
+if st.button("📧 Send Proposal"):
+    if recipient_email and "@" in recipient_email:
+        csv_bytes = df.to_csv(index=False).encode('utf-8')
+        b64_csv = base64.b64encode(csv_bytes).decode()
+
+        message = Mail(
+            from_email=Email(FROM_EMAIL, name="H&Co"),
+            to_emails=To(recipient_email),
+            subject="📄 Your Client Proposal from H&Co",
+            plain_text_content=Content("text/plain", "Attached is the proposal with your estimated client details.")
+        )
+
+        attachment = Attachment()
+        attachment.file_content = FileContent(b64_csv)
+        attachment.file_type = FileType("text/csv")
+        attachment.file_name = FileName("client_info.csv")
+        attachment.disposition = Disposition("attachment")
+        message.attachment = attachment
+
+        try:
+            sg = sendgrid.SendGridAPIClient(SENDGRID_API_KEY)
+            response = sg.send(message)
+            if response.status_code in [200, 202]:
+                st.success(f"Proposal sent to {recipient_email} ✅")
+            else:
+                st.error("Something went wrong. Email not sent.")
+        except Exception as e:
+            st.error(f"Failed to send email: {e}")
+    else:
+        st.warning("Please enter a valid email address.")
