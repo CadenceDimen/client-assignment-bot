@@ -80,14 +80,29 @@ complexity = st.radio("What is the complexity of the client?", ["Low", "Medium",
 if complexity:
     answered += 1
 
-# Show estimated billing slider
+# Show estimated billing slider with user interaction tracking
+if "estimate_changed" not in st.session_state:
+    st.session_state.estimate_changed = False
+
+def handle_slider_change():
+    st.session_state.estimate_changed = True
+
 price_min, price_max = price_ranges.get(client_result, (1000, 3000))
-estimate = st.slider("💵 What is the estimated billing for this client?", min_value=price_min, max_value=price_max, value=price_min, step=100, key="estimate")
-if estimate:
+estimate = st.slider(
+    "💵 What is the estimated billing for this client?",
+    min_value=price_min,
+    max_value=price_max,
+    value=price_min,
+    step=100,
+    key="estimate",
+    on_change=handle_slider_change
+)
+
+if st.session_state.estimate_changed:
     answered += 1
 
 # Total second page = 4 questions → 40 / 4 = 10% per question
-progress = min(50 + (answered * 10), 100)
+progress = min(60 + (answered * 10), 100)
 st.session_state["progress"] = progress
 st.progress(progress / 100.0, text=f"Progress: {int(progress)}%")
 
