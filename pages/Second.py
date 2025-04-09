@@ -12,6 +12,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Back button at the top
+if st.button("🔙 Back", key="back_button_top"):
+    st.switch_page("first.py")
+
 # Title + intro
 st.title("🎉 Thank You!")
 st.write("Thank you for completing the survey!")
@@ -60,13 +64,13 @@ client_id_map = {
 }
 
 # Language, VIP, Complexity
-language = st.radio("What language do you prefer?", ["English", "Spanish", "Portuguese"])
-vip_status = st.radio("Is the client a VIP or Regular?", ["VIP", "Regular"])
-complexity = st.radio("What is the complexity of the client?", ["Low", "Medium", "High"])
+language = st.radio("What language do you prefer?", ["English", "Spanish", "Portuguese"], index=None, key="language")
+vip_status = st.radio("Is the client a VIP or Regular?", ["VIP", "Regular"], index=None, key="vip_status")
+complexity = st.radio("What is the complexity of the client?", ["Low", "Medium", "High"], index=None, key="complexity")
 
 # Show estimated billing slider
 price_min, price_max = price_ranges.get(client_result, (1000, 3000))
-estimate = st.slider("💵 What is the estimated billing for this client?", min_value=price_min, max_value=price_max, value=price_min, step=100)
+estimate = st.slider("💵 What is the estimated billing for this client?", min_value=price_min, max_value=price_max, value=price_min, step=100, key="estimate")
 
 # Get client ID
 client_id = client_id_map.get(client_result, "N/A")
@@ -98,7 +102,7 @@ FROM_EMAIL = "cdimen@hco.com"
 
 st.markdown("---")
 st.markdown("### 📬 Send Proposal to Client")
-recipient_email = st.text_input("Enter recipient's email address")
+recipient_email = st.text_input("Enter recipient's email address", key="recipient_email")
 
 if st.button("📧 Send Proposal"):
     if recipient_email and "@" in recipient_email:
@@ -130,3 +134,7 @@ if st.button("📧 Send Proposal"):
             st.error(f"Failed to send email: {e}")
     else:
         st.warning("Please enter a valid email address.")
+
+# ✅ Done button at the bottom only
+if st.button("✅ Done", key="done_button_final"):
+    st.success("Client finalized!")
