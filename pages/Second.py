@@ -12,9 +12,15 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Force progress bar to start at exactly 60%
+st.session_state["progress"] = 60
+answered = 0
+
 # Back button at the top
-if st.button("🔙 Back", key="back_button_top"):
-    st.switch_page("first.py")
+col_done, col_back = st.columns([1, 1])
+with col_back:
+    if st.button("🔙 Back"):
+        st.switch_page("first.py")
 
 # Title + intro
 st.title("🎉 Thank You!")
@@ -65,12 +71,25 @@ client_id_map = {
 
 # Language, VIP, Complexity
 language = st.radio("What language do you prefer?", ["English", "Spanish", "Portuguese"], index=None, key="language")
+if language:
+    answered += 1
 vip_status = st.radio("Is the client a VIP or Regular?", ["VIP", "Regular"], index=None, key="vip_status")
+if vip_status:
+    answered += 1
 complexity = st.radio("What is the complexity of the client?", ["Low", "Medium", "High"], index=None, key="complexity")
+if complexity:
+    answered += 1
 
 # Show estimated billing slider
 price_min, price_max = price_ranges.get(client_result, (1000, 3000))
 estimate = st.slider("💵 What is the estimated billing for this client?", min_value=price_min, max_value=price_max, value=price_min, step=100, key="estimate")
+if estimate:
+    answered += 1
+
+# Total second page = 4 questions → 40 / 4 = 10% per question
+progress = min(50 + (answered * 10), 100)
+st.session_state["progress"] = progress
+st.progress(progress / 100.0, text=f"Progress: {int(progress)}%")
 
 # Get client ID
 client_id = client_id_map.get(client_result, "N/A")
@@ -90,7 +109,7 @@ df = pd.DataFrame(client_data)
 st.markdown("### 📝 Summary of Selections:")
 st.dataframe(df)
 st.download_button(
-    label="📥 Download Client Info as CSV",
+    label="📅 Download Client Info as CSV",
     data=df.to_csv(index=False).encode('utf-8'),
     file_name='client_info.csv',
     mime='text/csv'
@@ -135,6 +154,6 @@ if st.button("📧 Send Proposal"):
     else:
         st.warning("Please enter a valid email address.")
 
-# ✅ Done button at the bottom only
-if st.button("✅ Done", key="done_button_final"):
+# Done button only
+if st.button("✅ Done"):
     st.success("Client finalized!")
