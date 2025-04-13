@@ -3,6 +3,7 @@ import pandas as pd
 import sendgrid
 from sendgrid.helpers.mail import Mail, Email, To, Content, Attachment, FileContent, FileName, FileType, Disposition
 import base64
+import datetime
 
 # Hide sidebar
 st.set_page_config(layout="wide")
@@ -70,7 +71,7 @@ client_id_map = {
 }
 
 # Language, VIP, Complexity
-language = st.radio("What language do you prefer?", ["English", "Spanish", "Portuguese"], index=None, key="language")
+language = st.radio("What language does the client prefer?", ["English", "Spanish", "Portuguese"], index=None, key="language")
 if language:
     answered += 1
 vip_status = st.radio("Is the client a VIP or Regular?", ["VIP", "Regular"], index=None, key="vip_status")
@@ -101,6 +102,17 @@ estimate = st.slider(
 if st.session_state.estimate_changed:
     answered += 1
 
+# NEW FIELDS
+st.markdown("---")
+unique_factor = st.text_input("Unique Factor")
+client_tier = st.selectbox("What is the client's tier?", ["", "1", "2", "3", "4", "5"])
+client_name = st.text_input("What is the client's name?")
+location = st.text_input("What is the client's preferred location?")
+referral_status = st.radio("Client Referral / New Client", ["Referral", "New Client"], index=None)
+month = st.selectbox("Month", ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
+previous_team = st.text_input("If client referral, what team before?")
+signed_proposal = st.radio("Signed Proposal", ["Yes", "No"], index=None)
+
 # Total second page = 4 questions → 40 / 4 = 10% per question
 progress = min(60 + (answered * 10), 100)
 st.session_state["progress"] = progress
@@ -113,10 +125,18 @@ client_id = client_id_map.get(client_result, "N/A")
 client_data = {
     "Client ID Number": [client_id],
     "Client Type": [client_result],
+    "Client Tier": [client_tier],
+    "Client Name": [client_name],
+    "Total Billing": [f"${estimate}"],
+    "Location": [location],
     "Language": [language],
-    "Status": [vip_status],
+    "VIP": [vip_status],
+    "Client Referral/New Client": [referral_status],
+    "Month": [month],
+    "If client referral what team before?": [previous_team],
     "Complexity": [complexity],
-    "Estimated Billing": [f"${estimate}"]
+    "Signed Proposal": [signed_proposal],
+    "Unique Factor": [unique_factor]
 }
 df = pd.DataFrame(client_data)
 
