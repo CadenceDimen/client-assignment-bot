@@ -1,12 +1,6 @@
 import streamlit as st
 from PIL import Image
 
-# Helper to tag real estate clients
-def check_real_estate_tag(result_base, key_suffix):
-    st.markdown('<p style="font-size:18px;"><b>Is the client in Real Estate?</b></p>', unsafe_allow_html=True)
-    real_estate = st.radio("Real Estate?", ["Yes", "No"], index=None, key=f"real_estate_{key_suffix}", label_visibility="collapsed")
-    return f"{result_base} [Real Estate]" if real_estate == "Yes" else result_base
-
 # Hide sidebar
 st.set_page_config(layout="wide")
 st.markdown("""
@@ -96,11 +90,11 @@ if filing_type == "Company":
                     if corp_type:
                         answered += 1
                         if corp_type == "C-Corp":
-                            result = check_real_estate_tag("U.S. Corporation with Tax Services (2XXXXX) - Form 1120", answered)
+                            result = "U.S. Corporation with Tax Services (2XXXXX) - Form 1120"
                         else:
-                            result = check_real_estate_tag("U.S. S-Corporation with Tax Services (2XXXXX) - Form 1120-S", answered)
+                            result = "U.S. S-Corporation with Tax Services (2XXXXX) - Form 1120-S"
                 else:
-                    result = check_real_estate_tag("Foreign Corporation with Tax Services (2XXXXX) - Form 1120-F", answered)
+                    result = "Foreign Corporation with Tax Services (2XXXXX) - Form 1120-F"
 
         elif entity_type == "LLC":
             st.markdown('<p style="font-size:18px;"><b>How many owners are there?</b></p>', unsafe_allow_html=True)
@@ -118,9 +112,9 @@ if filing_type == "Company":
                             if has_us_income:
                                 answered += 1
                                 if has_us_income == "No":
-                                    result = check_real_estate_tag("Disregarded Entity DRE5472 (3XXXXX) - Form 5472 / Pro Form 1120", answered)
+                                    result = "Disregarded Entity DRE5472 (3XXXXX) - Form 5472 / Pro Form 1120"
                                 else:
-                                    result = check_real_estate_tag("U.S. Corporation with Tax Services (2XXXXX) - Form 1120 (5472 add-on)", answered)
+                                    result = "U.S. Corporation with Tax Services (2XXXXX) - Form 1120 (5472 add-on)"
                         else:
                             st.markdown('<p style="font-size:18px;"><b>Did you elect to be treated as a C-Corp or S-Corp?</b></p>', unsafe_allow_html=True)
                             elected = st.radio("C/S Election", ["Yes", "No"], index=None, label_visibility="collapsed")
@@ -132,11 +126,11 @@ if filing_type == "Company":
                                     if corp_type:
                                         answered += 1
                                         if corp_type == "C-Corp":
-                                            result = check_real_estate_tag("U.S. Corporation with Tax Services (2XXXXX) - Form 1120", answered)
+                                            result = "U.S. Corporation with Tax Services (2XXXXX) - Form 1120"
                                         else:
-                                            result = check_real_estate_tag("U.S. S-Corporation with Tax Services (2XXXXX) - Form 1120-S", answered)
+                                            result = "U.S. S-Corporation with Tax Services (2XXXXX) - Form 1120-S"
                                 else:
-                                    result = check_real_estate_tag("US Individual Tax Services (4XXXX) - Form 1040 (with schedule c add-on)", answered)
+                                    result = "US Individual Tax Services (4XXXX) - Form 1040 (with schedule c add-on)"
                 elif owners == "2+ Owners":
                     st.markdown('<p style="font-size:18px;"><b>Do you want to stay in a partnership or become a corporation?</b></p>', unsafe_allow_html=True)
                     structure = st.radio("LLC Structure", ["Stay as a Partnership", "Become a Corporation", "Unsure"], index=None, label_visibility="collapsed")
@@ -148,9 +142,9 @@ if filing_type == "Company":
                             if owner_type:
                                 answered += 1
                                 if owner_type == "US":
-                                    result = check_real_estate_tag("U.S. Partnership with Tax Services (2XXXXX) - Form 1065", answered)
+                                    result = "U.S. Partnership with Tax Services (2XXXXX) - Form 1065"
                                 else:
-                                    result = check_real_estate_tag("Foreign Partnership with Tax Services (2XXXXX) - Form 1065 (ADD ONS 8804 & 8805)", answered)
+                                    result = "Foreign Partnership with Tax Services (2XXXXX) - Form 1065 (ADD ONS 8804 & 8805)"
 
                         elif structure == "Become a Corporation":
                             st.markdown('<p style="font-size:18px;"><b>Is the ownership US or Foreign?</b></p>', unsafe_allow_html=True)
@@ -163,13 +157,13 @@ if filing_type == "Company":
                                     if corp_type:
                                         answered += 1
                                         if corp_type == "C-Corp":
-                                            result = check_real_estate_tag("U.S. Corporation with Tax Services (2XXXXX) - Form 1120", answered)
+                                            result = "U.S. Corporation with Tax Services (2XXXXX) - Form 1120"
                                         else:
-                                            result = check_real_estate_tag("U.S. S-Corporation with Tax Services (2XXXXX) - Form 1120-S", answered)
+                                            result = "U.S. S-Corporation with Tax Services (2XXXXX) - Form 1120-S"
                                 else:
-                                    result = check_real_estate_tag("Foreign Corporation with Tax Services (2XXXXX) - Form 1120-F", answered)
+                                    result = "Foreign Corporation with Tax Services (2XXXXX) - Form 1120-F"
                         else:
-                            result = check_real_estate_tag("Consulting or One Time Project - NON-TAX (8XXXXX)", answered)
+                            result = "Consulting or One Time Project - NON-TAX (8XXXXX)"
 
         if 'result' in locals():
             st.session_state["client_result"] = result
@@ -214,7 +208,7 @@ elif filing_type == "Just Personal":
 # ------------------------
 elif filing_type == "Other":
     answered += 1
-    st.markdown("### 🗾 Trust Filing")
+    st.markdown("### 🇾 Trust Filing")
     st.markdown('<p style="font-size:18px;"><b>Is it a Grantor or Non-Grantor trust?</b></p>', unsafe_allow_html=True)
     trust_type = st.radio("Trust Type", ["Grantor", "Non-Grantor"], index=None, label_visibility="collapsed")
     if trust_type:

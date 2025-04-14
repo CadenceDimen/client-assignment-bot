@@ -102,13 +102,16 @@ def match_client_to_team(team_df, client_profile):
         team_df = team_df.sort_values(by='Client Loss')
 
     top5 = team_df.head(5)
-    pref1 = top5[top5['Service Preference 1'] == service]
+
+    pref1 = top5[top5['Service Preference1'] == service]
     if not pref1.empty:
         return pref1['Name'].tolist()
-    pref2 = top5[top5['Service Preference 2'] == service]
+
+    pref2 = top5[top5['Service Preference2'] == service]
     if not pref2.empty:
         return pref2['Name'].tolist()
-    pref3 = top5[top5['Service Preference 3'] == service]
+
+    pref3 = top5[top5['Service Preference3'] == service]
     if not pref3.empty:
         return pref3['Name'].tolist()
 
@@ -116,6 +119,10 @@ def match_client_to_team(team_df, client_profile):
 
 # 5. Return Detailed Info
 def get_team_details(team_df, matched_names):
-    return team_df[team_df['Name'].isin(matched_names)][
+    result_df = team_df[team_df['Name'].isin(matched_names)][
         ['Name', 'Role', 'BU', 'Office', 'Partner_Manager']
     ].reset_index(drop=True)
+
+    result_df.index += 1  # Start index from 1
+    return result_df
+
