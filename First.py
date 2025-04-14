@@ -208,7 +208,7 @@ elif filing_type == "Just Personal":
 # ------------------------
 elif filing_type == "Other":
     answered += 1
-    st.markdown("### 🇾 Trust Filing")
+    st.markdown("### Trust Filing")
     st.markdown('<p style="font-size:18px;"><b>Is it a Grantor or Non-Grantor trust?</b></p>', unsafe_allow_html=True)
     trust_type = st.radio("Trust Type", ["Grantor", "Non-Grantor"], index=None, label_visibility="collapsed")
     if trust_type:

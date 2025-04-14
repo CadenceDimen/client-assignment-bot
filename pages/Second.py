@@ -12,20 +12,47 @@ st.markdown("""
     <style>
     [data-testid="stSidebar"] {display: none;}
     label { font-size: 20px !important; }
+
+    /* Sticky progress bar styling */
+    .sticky-progress-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 9999;
+        background-color: white;
+        padding: 0.5rem 1rem;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Ensure main content has top padding to avoid being hidden behind sticky bar */
+    .block-container {
+        padding-top: 80px !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Force progress bar to start at exactly 60%
-st.session_state["progress"] = 60
-answered = 0
+# Set starting progress
+if "progress" not in st.session_state:
+    st.session_state["progress"] = 60  # Start at 60% after First.py
 
-# Back button at the top
+# Total questions in Second.py
+total_questions = 12  # adjust if you add/remove questions
+step = 40 / total_questions
+
+# Sticky custom progress bar
+st.markdown('<div class="sticky-progress-container">', unsafe_allow_html=True)
+st.progress(st.session_state["progress"] / 100.0, text=f"Progress: {int(st.session_state['progress'])}%")
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Back button
 col_done, col_back = st.columns([1, 1])
 with col_back:
     if st.button("🔙 Back"):
         st.switch_page("first.py")
 
-# Title + intro
+# Title
 st.title("🎉 Thank You!")
 st.write("Thank you for completing the survey!")
 st.write("Now you are going to fill out some more information about the client so that they can automatically be placed on a team.")
@@ -73,9 +100,9 @@ client_id_map = {
 }
 
 # Collect inputs
-language = st.radio("Language", ["English", "Spanish", "Portuguese"], index=None, key="language")
-vip_status = st.radio("VIP Status", ["VIP", "Regular"], index=None, key="vip_status")
-complexity = st.radio("Complexity", ["Low", "Medium", "High"], index=None, key="complexity")
+st.radio("Language", ["English", "Spanish", "Portuguese"], index=None, key="language")
+st.radio("VIP Status", ["VIP", "Regular"], index=None, key="vip_status")
+st.radio("Complexity", ["Low", "Medium", "High"], index=None, key="complexity")
 
 if "estimate_changed" not in st.session_state:
     st.session_state.estimate_changed = False
@@ -84,49 +111,63 @@ def handle_slider_change():
     st.session_state.estimate_changed = True
 
 price_min, price_max = price_ranges.get(client_result, (1000, 3000))
-estimate = st.slider("Estimate", min_value=price_min, max_value=price_max, value=price_min, step=100, key="estimate", on_change=handle_slider_change)
+st.slider("Estimate", min_value=price_min, max_value=price_max, value=price_min, step=100, key="estimate", on_change=handle_slider_change)
+st.text_input("Unique Factor", key="unique_factor")
+st.radio("Client Tier", ["1", "2", "3", "4", "5"], index=None, key="client_tier")
+st.text_input("Client Name", key="client_name")
+st.radio("Location", ["Coral Gables", "Brickell", "Aventura"], index=None, key="location")
+st.radio("Referral Status", ["Referral", "New Client"], index=None, key="referral_status")
+st.radio("Month", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], index=None, key="month")
+st.text_input("Previous Team", key="previous_team")
+st.radio("Signed Proposal", ["Yes", "No"], index=None, key="signed_proposal")
 
-unique_factor = st.text_input("Unique Factor", key="unique_factor")
-client_tier = st.radio("Client Tier", ["1", "2", "3", "4", "5"], index=None, key="client_tier")
-client_name = st.text_input("Client Name", key="client_name")
-location = st.radio("Location", ["Coral Gables", "Brickell", "Aventura"], index=None, key="location")
-referral_status = st.radio("Referral Status", ["Referral", "New Client"], index=None, key="referral_status")
-month = st.radio("Month", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], index=None, key="month")
-previous_team = st.text_input("Previous Team", key="previous_team")
-signed_proposal = st.radio("Signed Proposal", ["Yes", "No"], index=None, key="signed_proposal")
+# Update top progress bar only based on answered fields
+fields = [
+    "language", "vip_status", "complexity", "estimate", "unique_factor",
+    "client_tier", "client_name", "location", "referral_status",
+    "month", "previous_team", "signed_proposal"
+]
+answered = sum(1 for field in fields if st.session_state.get(field) not in [None, ""])
+new_progress = min(round(60 + answered * step), 100)
+st.session_state["progress"] = new_progress
+st.markdown("""
+    <script>
+        const topBar = window.parent.document.querySelector('.sticky-progress-container');
+        if (topBar) topBar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    </script>
+""", unsafe_allow_html=True)
 
 # Build DataFrame
 client_id = client_id_map.get(client_result, "N/A")
 client_data = {
     "Client ID Number": [client_id],
     "Client_Type": [client_result],
-    "Client_Tier": [client_tier],
-    "Client Name": [client_name],
-    "Total Billing": [estimate],
-    "Preferred_Location": [location],
-    "Language": [language],
-    "VIP": [vip_status],
-    "Client Referral/New Client": [referral_status],
-    "Month": [month],
-    "If client referral what team before?": [previous_team],
-    "Complexity": [complexity],
-    "Signed Proposal": [signed_proposal],
-    "Unique Factor": [unique_factor]
+    "Client_Tier": [st.session_state.get("client_tier")],
+    "Client Name": [st.session_state.get("client_name")],
+    "Total Billing": [st.session_state.get("estimate")],
+    "Preferred_Location": [st.session_state.get("location")],
+    "Language": [st.session_state.get("language")],
+    "VIP": [st.session_state.get("vip_status")],
+    "Client Referral/New Client": [st.session_state.get("referral_status")],
+    "Month": [st.session_state.get("month")],
+    "If client referral what team before?": [st.session_state.get("previous_team")],
+    "Complexity": [st.session_state.get("complexity")],
+    "Signed Proposal": [st.session_state.get("signed_proposal")],
+    "Unique Factor": [st.session_state.get("unique_factor")]
 }
 df = pd.DataFrame(client_data)
 
 # Button to preview and run match
-if st.button("🧾 Generate CSV"):
+if st.button("📟 Generate CSV"):
     st.markdown("### 📄 Generated CSV Preview")
     st.dataframe(df)
     st.download_button(
-        label="📥 Download CSV",
+        label="📅 Download CSV",
         data=df.to_csv(index=False).encode("utf-8"),
         file_name="client_profile.csv",
         mime="text/csv"
     )
 
-    # Pass to Third.py
     client_profile = df.iloc[0].to_dict()
     matched_names = Third.match_client_to_team(Third.latest_team_data, client_profile)
     matched_details = Third.get_team_details(Third.latest_team_data, matched_names)
