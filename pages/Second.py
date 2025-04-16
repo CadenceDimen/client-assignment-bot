@@ -172,5 +172,5 @@ if st.button("📟 Generate CSV"):
     matched_names = Third.match_client_to_team(Third.latest_team_data, client_profile)
     matched_details = Third.get_team_details(Third.latest_team_data, matched_names)
 
-    st.markdown("### ✅ Top 5 Team Matches")
+    st.markdown("### ✅ Top Team Matches")
     st.dataframe(matched_details)

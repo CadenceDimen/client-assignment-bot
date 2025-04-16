@@ -1,5 +1,7 @@
 import streamlit as st
 from PIL import Image
+import base64
+from io import BytesIO
 
 # Hide sidebar
 st.set_page_config(layout="wide")
@@ -33,6 +35,19 @@ st.markdown("""
         .stButton>button:hover {
             background-color: #002244;
         }
+        .sticky-progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            background-color: white;
+            padding: 0.5rem 1rem;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .block-container {
+            padding-top: 100px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -40,9 +55,25 @@ st.markdown("""
 if "progress" not in st.session_state:
     st.session_state["progress"] = 0
 
-# Logo
+# Sticky progress bar at top
+st.markdown('<div class="sticky-progress-container">', unsafe_allow_html=True)
+st.progress(st.session_state["progress"] / 100.0, text=f"Progress: {int(st.session_state['progress'])}%")
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Load and display logo centered and slightly bigger
 logo = Image.open("logo.png")
-st.image(logo, use_container_width=True)
+buffered = BytesIO()
+logo.save(buffered, format="PNG")
+img_str = base64.b64encode(buffered.getvalue()).decode()
+
+st.markdown(
+    f"""
+    <div style="display: flex; justify-content: center; align-items: center; margin-top: 1rem; margin-bottom: 1rem;">
+        <img src="data:image/png;base64,{img_str}" width="800" style="max-width: 100%; height: auto;"/>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown('<div class="big-title">Client Assignment Bot</div>', unsafe_allow_html=True)
 st.markdown("---")
