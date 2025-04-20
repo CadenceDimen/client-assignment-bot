@@ -75,11 +75,13 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown('<div class="big-title">Client Assignment Bot</div>', unsafe_allow_html=True)
+st.markdown('<div class="big-title">CRM Automation Tool</div>', unsafe_allow_html=True)
 st.markdown("---")
 
-# Initial buttons
-col1, col2, col3 = st.columns(3)
+# Initial buttons - centered using columns
+st.markdown('<h4 style="text-align:center;">Select Filing Type</h4>', unsafe_allow_html=True)
+col0, col1, col2, col3, col4 = st.columns([3, 3, 3, 3, 1])
+
 with col1:
     if st.button("Other"):
         st.session_state.clear()
@@ -92,6 +94,7 @@ with col3:
     if st.button("Company"):
         st.session_state.clear()
         st.session_state['filing_type'] = 'Company'
+
 
 filing_type = st.session_state.get('filing_type', None)
 st.markdown("---")
