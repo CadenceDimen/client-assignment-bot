@@ -1,14 +1,21 @@
-# powerbi_push.py
-
 import requests
 import datetime
 
-# REPLACE this with your real Power BI push URL
-PUSH_URL = "https://api.powerbi.com/beta/2a144b72-f239-42d4-8c0e-6f0f17c48e33/datasets/24bb7591-834b-4b3f-aab4-eff31d7f3ea0/rows?experience=power-bi&key=%2Foyj3QxBX2j6SVppNmmw4Z2cI7e6t%2BIIY8%2FtbvM5y6us3iYpHjbC4UoqCOKxOnw6C%2BxKj8n5iMKcBbiIPnxpSA%3D%3D"
+PUSH_URL = "https://api.powerbi.com/beta/2cca6d2f-748f-4cfb-a5f8-74ee10be33eb/datasets/c440f6a6-03b6-4393-b19a-09dc88d921df/rows?experience=power-bi&key=4dwS07nuINW0A9xhA6vJ96XeF6tn7fTKy2zwJcWml5CxdmaxU%2Bhfclxcwhh8oOqqQb3%2FdDXvOR7SgYScRlZI0w%3D%3D"
 
-def push_to_power_bi(client_type, team):
+def push_to_power_bi(client_name, client_type, client_tier, complexity,
+                     location, language, estimate,
+                     unique_factor, signed_proposal, team):
     data = [{
+        "client_name": client_name,
         "client_type": client_type,
+        "client_tier": client_tier,
+        "complexity": complexity,
+        "location": location,
+        "language": language,
+        "estimate": estimate,
+        "unique_factor": unique_factor,
+        "signed_proposal": signed_proposal,
         "team": team,
         "timestamp": datetime.datetime.now().isoformat()
     }]
@@ -18,4 +25,4 @@ def push_to_power_bi(client_type, team):
     if response.status_code == 200:
         print("✅ Data pushed to Power BI!")
     else:
-        print(f"❌ Error pushing data: {response.status_code} - {response.text}")
+        print(f"❌ Error: {response.status_code} - {response.text}")
