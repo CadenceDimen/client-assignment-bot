@@ -17,7 +17,8 @@ def push_to_power_bi(client_name, client_type, client_tier, complexity,
         "unique_factor": unique_factor,
         "signed_proposal": signed_proposal,
         "team": team,
-        "timestamp": datetime.datetime.now().isoformat()
+        "timestamp": datetime.datetime.now().replace(microsecond=0).isoformat()
+
     }]
 
     response = requests.post(PUSH_URL, json=data)
