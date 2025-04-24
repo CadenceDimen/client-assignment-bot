@@ -4,10 +4,10 @@ import datetime
 import time
 
 # 🔗 Replace this with your actual Power BI Push URL
-PUSH_URL = "https://api.powerbi.com/beta/2cca6d2f-748f-4cfb-a5f8-74ee10be33eb/datasets/c440f6a6-03b6-4393-b19a-09dc88d921df/rows?experience=power-bi&key=4dwS07nuINW0A9xhA6vJ96XeF6tn7fTKy2zwJcWml5CxdmaxU%2Bhfclxcwhh8oOqqQb3%2FdDXvOR7SgYScRlZI0w%3D%3D"
+PUSH_URL = "https://api.powerbi.com/beta/2cca6d2f-748f-4cfb-a5f8-74ee10be33eb/datasets/7e61dd3a-971e-4bca-acbc-da206861cf61/rows?experience=power-bi&clientSideAuth=0&key=Ik4UhTtlgvLZF42HMcwl%2BIr2soqKsBuRkU3pHUJ2%2B0%2B2sUIquf8eU4W6Nun7cXjhTVyxy6%2FhJoUzNGV9Pgl0Mg%3D%3D"
 
 # ✅ Load the Excel file with team names and client counts
-team_df = pd.read_excel("Team Profiles.xlsx", sheet_name="Team Data")
+team_df = pd.read_excel("Team Profiles - Copy.xlsx", sheet_name="Team Data")
 team_df.columns = team_df.columns.str.strip()
 
 # 🧾 Show which teams are being loaded and their counts
@@ -35,7 +35,7 @@ for _, row in team_df.iterrows():
             "language": "",
             #"referral_status": "",
             "estimate": 0,
-            "unique_factor": "",
+            #"unique_factor": "",
             "signed_proposal": "",
             "team": team_name,
             "timestamp": datetime.datetime.now().isoformat()

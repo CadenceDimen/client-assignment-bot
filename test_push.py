@@ -1,7 +1,7 @@
 import requests
 import datetime
 
-url = "https://api.powerbi.com/beta/2cca6d2f-748f-4cfb-a5f8-74ee10be33eb/datasets/642256f8-a0a3-49bb-bfea-d4e616ef14f5/rows?experience=power-bi&key=9sKo8OqOhWNjs7sH6i20R%2ByuRBo6nSbDwZq8aSkBURvC%2FV90YvLriUEI0ouMGVL3zxFH8XZ3PIgo%2FcSk%2FsxyqA%3D%3D"
+url = "https://api.powerbi.com/beta/2cca6d2f-748f-4cfb-a5f8-74ee10be33eb/datasets/7e61dd3a-971e-4bca-acbc-da206861cf61/rows?experience=power-bi&clientSideAuth=0&key=Ik4UhTtlgvLZF42HMcwl%2BIr2soqKsBuRkU3pHUJ2%2B0%2B2sUIquf8eU4W6Nun7cXjhTVyxy6%2FhJoUzNGV9Pgl0Mg%3D%3D"
 
 data = [{
     "client_type": "Test Client",

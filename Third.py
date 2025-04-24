@@ -1,7 +1,7 @@
 import pandas as pd
 
 # 1. Load and clean the team data
-latest_team_data = pd.read_excel("Team Profiles.xlsx", sheet_name="Team Data")
+latest_team_data = pd.read_excel("Team Profiles - Copy.xlsx", sheet_name="Team Data")
 latest_team_data.columns = latest_team_data.columns.str.strip()
 latest_team_data['Aptitude'] = latest_team_data['Aptitude'].str.extract(r'(\d)').astype(int)
 latest_team_data['Communication'] = latest_team_data['Communication'].str.extract(r'(\d)').astype(int)
@@ -64,7 +64,7 @@ def match_client_to_team(team_df, client_profile):
         team_df = team_df[team_df['Aptitude'] >= 4]
     else:
         team_df = team_df[team_df['Aptitude'] >= 1]
-        team_df = team_df.sort_values(by='Billing')
+        team_df = team_df.sort_values(by='Starting_Billing')
 
     if client_profile['VIP'] == 'VIP':
         if client_profile['Complexity'] == 'High':
@@ -84,7 +84,7 @@ def match_client_to_team(team_df, client_profile):
         team_df = team_df[team_df[lang] == 'Yes']
 
     team_df = team_df[
-        (team_df['Billing'] < 750000) &
+        (team_df['Starting_Billing'] < 750000) &
         (team_df['Clients_Count'] < 250) &
         (team_df['Client Loss'] <= 0.20)
     ]

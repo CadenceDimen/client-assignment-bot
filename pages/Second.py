@@ -173,12 +173,11 @@ if st.button("📟 Generate CSV"):
     client_profile = df.iloc[0].to_dict()
     matched_names = Third.match_client_to_team(Third.latest_team_data, client_profile)
 
-    st.write("💬 All matched teams:", matched_names)
+    #st.write("💬 All matched teams:", matched_names)
 
-    if matched_names:
-        top_team = matched_names[0]
-        st.write("✅ Top team being pushed:", top_team)
-
+    #if matched_names:
+        #top_team = matched_names[0]
+        #st.write("✅ Top team being pushed:", top_team)
 
     #from powerbi_push import push_to_power_bi  # Add this at the top of your file if you haven’t
     if matched_names:
