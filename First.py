@@ -228,7 +228,7 @@ elif filing_type == "Just Personal":
             itin = st.radio("ITIN Status", ["Yes", "No"], index=None, label_visibility="collapsed")
             if itin:
                 answered += 1
-                if itin == "Yes":
+                if itin == "Yess":
                     result = "NRA Individual Tax Services (4XXXX) - Form 1040NR"
                 else:
                     result = "NRA Individual Tax Services (4XXXX) - Form 1040NR with W7 add-on"
