@@ -114,7 +114,7 @@ def handle_slider_change():
 
 price_min, price_max = price_ranges.get(client_result, (1000, 3000))
 st.slider("Estimate", min_value=price_min, max_value=price_max, value=price_min, step=100, key="estimate", on_change=handle_slider_change)
-st.text_input("Unique Factor", key="unique_factor")
+#st.text_input("Unique Factor", key="unique_factor")
 st.radio("Client Tier", ["1", "2", "3", "4", "5"], index=None, key="client_tier")
 st.text_input("Client Name", key="client_name")
 st.radio("Location", ["Coral Gables", "Brickell", "Aventura"], index=None, key="location")
